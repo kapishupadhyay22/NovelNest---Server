@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connectdb');
 const User = sequelize.define('User', {
-    // Define user attributes
     username: {
         type: DataTypes.STRING,
         allowNull: false,

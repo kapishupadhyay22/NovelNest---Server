@@ -1,7 +1,12 @@
 const { User, Book } = require('../models/datamodels');
 const asyncWrapper = require('../middleware/async');
+const jwt = require('jsonwebtoken');
 //const { all } = require('../routes/routes');
 //const { get } = require('../routes/routes');
+
+
+const secretKey = 'kapishupadhyay';
+
 
 const getAllBooks = asyncWrapper(async (req, res) => {
     const book = await Book.findAll();
@@ -21,12 +26,13 @@ const sendBook = asyncWrapper(async (req, res) => {
 
 const addUser = asyncWrapper(async (req, res) => {
     const { username, email, password, age, genere, isAdmin } = req.body;
-    try {
-        await User.create({ username, email, password, age, genere, isAdmin });
-        res.status(200).json({ "msg": "user created successfully" });
-    } catch (err) {
-        console.log(err);
+    const payload = {
+        uname: username,
+        role: isAdmin
     }
+    const token = jwt.sign(payload, secretKey);
+    await User.create({ username, email, password, age, genere, isAdmin });
+    res.status(200).json(token);
 })
 const showAllUser = asyncWrapper(async (req, res) => {
     const allUser = await User.findAll();

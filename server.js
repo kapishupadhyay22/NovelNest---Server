@@ -1,8 +1,6 @@
 const express = require('express');
-const User = require('./models/datamodels');
 const notFound = require('./middleware/notfound');
 const errorHandlerMiddleware = require('./middleware/errorhandler');
-const { sequelize } = require('./connectdb');
 const router = require('./routes/routes');
 
 const app = express();
