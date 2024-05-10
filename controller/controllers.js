@@ -34,8 +34,52 @@ const addUser = asyncWrapper(async (req, res) => {
     await User.create({ username, email, password, age, genere, isAdmin });
     res.status(200).json(token);
 })
+
+const loginUser = asyncWrapper(async (req, res) => {
+    const { username, email, password, age, genere, isAdmin } = req.body;
+    const currentUser = User.findOne({
+        where: {
+            username: username,
+            password: password
+        }
+    })
+    if (!currentUser) {
+        res.status(404).json({ "msg": "invalid username or password" });
+    }
+    const payload = {
+        uname: username,
+        role: isAdmin
+    }
+    const token = jwt.sign(payload, secretKey);
+    res.status(200).json({
+        "tok": token,
+        "msg": "User login successfull"
+    }
+    );
+})
+
+
 const showAllUser = asyncWrapper(async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token is required' });
+    }
+    let currentUser;
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        currentUser = decoded;
+    });
+
+    if (!currentUser.role) {
+        res.status(400).json({ "msg": "sorry you dont have the required permission for such operation" });
+    }
+
     const allUser = await User.findAll();
     res.status(200).json({ allUser });
+
 })
-module.exports = { getAllBooks, sendBook, addUser, showAllUser };
+module.exports = { getAllBooks, sendBook, addUser, showAllUser, loginUser };
