@@ -59,11 +59,10 @@ const addUser = asyncWrapper(async (req, res) => {
 
 const loginUser = asyncWrapper(async (req, res) => {
     const { username, password } = req.body;
-    const currentUser = User.findOne({
+    const currentUser = await User.findOne({
         where: {
             username: username,
             password: password,
-            //isAdmin: isAdmin
         }
     })
     if (!currentUser) {
