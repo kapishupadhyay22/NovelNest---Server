@@ -7,7 +7,29 @@ const secretKey = 'kapishupadhyay';
 
 
 const getAllBooks = asyncWrapper(async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ "msg": "login/signup is required" });
+    }
+    let currentUser;
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        currentUser = decoded;
+    });
+
+    if (!currentUser) {
+        res.status(400).json({ "msg": "Invalid Auth Token" });
+    }
+    //console.log(idf);
     const book = await Book.findAll();
+
+    if (!book) {
+        res.status(404).json({ "msg": "Error, book with this ID does not exists" })
+    }
+    // console.log(book);
     res.status(200).json({ book });
 })
 
@@ -83,4 +105,41 @@ const showAllUser = asyncWrapper(async (req, res) => {
     res.status(200).json({ allUser });
 
 })
-module.exports = { getAllBooks, sendBook, addUser, showAllUser, loginUser };
+
+
+const getBookById = asyncWrapper(async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    const i = parseInt(req.params.id);
+    const idf = i.toString();
+    if (!token) {
+        return res.status(401).json({ "msg": "login/signup is required" });
+    }
+    let currentUser;
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        currentUser = decoded;
+    });
+
+    if (!currentUser) {
+        res.status(400).json({ "msg": "Invalid Auth Token" });
+    }
+    //console.log(idf);
+    const book = await Book.findOne({
+        where: {
+            bookid: idf
+        }
+    })
+
+    if (!book) {
+        res.status(404).json({ "msg": "Error, book with this ID does not exists" })
+    }
+    // console.log(book);
+    res.status(200).json({ book });
+})
+
+
+
+module.exports = { getAllBooks, sendBook, addUser, showAllUser, loginUser, getBookById };

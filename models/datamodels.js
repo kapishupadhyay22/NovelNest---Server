@@ -32,7 +32,7 @@ const User = sequelize.define('User', {
 
 const Book = sequelize.define('Book', {
     bookid: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
     },
