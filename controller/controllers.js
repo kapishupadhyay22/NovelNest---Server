@@ -1,8 +1,6 @@
 const { User, Book } = require('../models/datamodels');
 const asyncWrapper = require('../middleware/async');
 const jwt = require('jsonwebtoken');
-//const { all } = require('../routes/routes');
-//const { get } = require('../routes/routes');
 
 
 const secretKey = 'kapishupadhyay';
@@ -30,17 +28,20 @@ const addUser = asyncWrapper(async (req, res) => {
         uname: username,
         role: isAdmin
     }
+    // Code for OTP verification of email
+    // Code for checking if the username or email exists
     const token = jwt.sign(payload, secretKey);
     await User.create({ username, email, password, age, genere, isAdmin });
     res.status(200).json(token);
 })
 
 const loginUser = asyncWrapper(async (req, res) => {
-    const { username, email, password, age, genere, isAdmin } = req.body;
+    const { username, password } = req.body;
     const currentUser = User.findOne({
         where: {
             username: username,
-            password: password
+            password: password,
+            //isAdmin: isAdmin
         }
     })
     if (!currentUser) {
@@ -48,7 +49,7 @@ const loginUser = asyncWrapper(async (req, res) => {
     }
     const payload = {
         uname: username,
-        role: isAdmin
+        role: currentUser.isAdmin
     }
     const token = jwt.sign(payload, secretKey);
     res.status(200).json({
