@@ -2,6 +2,7 @@ const { User, Book } = require('../models/datamodels');
 const asyncWrapper = require('../middleware/async');
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
+const { json } = require('sequelize');
 const redisClient = redis.createClient();
 
 
@@ -111,12 +112,13 @@ const showAllUser = asyncWrapper(async (req, res) => {
 const getBookById = asyncWrapper(async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    const i = parseInt(req.params.id);
+    let i = req.params.id;
     const idf = i.toString();
     if (!token) {
         return res.status(401).json({ "msg": "login/signup is required" });
     }
     let currentUser;
+
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid token' });
@@ -129,10 +131,15 @@ const getBookById = asyncWrapper(async (req, res) => {
     }
     //console.log(idf);
     i = JSON.stringify(i);
-    const cachedData = await redisClient.get(bookid);
+    // console.log("adjgcva");
+    try {
+        const cachedData = await redisClient.get(i);
+    } catch (e) {
+        console.log(e);
+    }
 
     if (!cachedData) {
-        console.log("executed")
+
         const book = await Book.findOne({
             where: {
                 bookid: idf
@@ -143,16 +150,14 @@ const getBookById = asyncWrapper(async (req, res) => {
             res.status(404).json({ "msg": "Error, book with this ID does not exists" })
         }
         // console.log(book);
+        const jsonstringbook = JSON.stringify(book);
+        redisClient.set(i, jsonstringbook);
         res.status(200).json({ book });
     }
     else {
         const Books = JSON.parse(cachedData);
-        const book = Books.content;
-        const filteredData = book
-            .filter((item) => item.bookid === i)
-            .map((item) => ({
-
-            }));
+        const book = Books.jsonstringbooks;
+        res.status(200).json({ book });
     }
 
 
