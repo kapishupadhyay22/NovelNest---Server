@@ -1,6 +1,8 @@
 const { User, Book } = require('../models/datamodels');
 const asyncWrapper = require('../middleware/async');
 const jwt = require('jsonwebtoken');
+const redis = require('redis');
+const redisClient = redis.createClient();
 
 
 const secretKey = 'kapishupadhyay';
@@ -126,17 +128,34 @@ const getBookById = asyncWrapper(async (req, res) => {
         res.status(400).json({ "msg": "Invalid Auth Token" });
     }
     //console.log(idf);
-    const book = await Book.findOne({
-        where: {
-            bookid: idf
-        }
-    })
+    i = JSON.stringify(i);
+    const cachedData = await redisClient.get(bookid);
 
-    if (!book) {
-        res.status(404).json({ "msg": "Error, book with this ID does not exists" })
+    if (!cachedData) {
+        console.log("executed")
+        const book = await Book.findOne({
+            where: {
+                bookid: idf
+            }
+        })
+
+        if (!book) {
+            res.status(404).json({ "msg": "Error, book with this ID does not exists" })
+        }
+        // console.log(book);
+        res.status(200).json({ book });
     }
-    // console.log(book);
-    res.status(200).json({ book });
+    else {
+        const Books = JSON.parse(cachedData);
+        const book = Books.content;
+        const filteredData = book
+            .filter((item) => item.bookid === i)
+            .map((item) => ({
+
+            }));
+    }
+
+
 })
 
 
