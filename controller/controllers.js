@@ -159,7 +159,7 @@ const getBookById = asyncWrapper(async (req, res) => {
         const book = Books.jsonstringbooks;
         res.status(200).json({ book });
     }
-
+    // getting error of client is closed
 
 })
 
