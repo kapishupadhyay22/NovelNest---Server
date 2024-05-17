@@ -3,7 +3,7 @@ const asyncWrapper = require('../middleware/async');
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
 const { json } = require('sequelize');
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(6379);
 
 
 const secretKey = 'kapishupadhyay';
@@ -110,6 +110,7 @@ const showAllUser = asyncWrapper(async (req, res) => {
 
 
 const getBookById = asyncWrapper(async (req, res) => {
+    await redisClient.connect();
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     let i = req.params.id;
@@ -132,14 +133,12 @@ const getBookById = asyncWrapper(async (req, res) => {
     //console.log(idf);
     i = JSON.stringify(i);
     // console.log("adjgcva");
-    try {
-        const cachedData = await redisClient.get(i);
-    } catch (e) {
-        console.log(e);
-    }
+    //try {
+    const cachedData = await redisClient.get(i);
+
 
     if (!cachedData) {
-
+        //console.log("hfbvdf");
         const book = await Book.findOne({
             where: {
                 bookid: idf
@@ -155,11 +154,13 @@ const getBookById = asyncWrapper(async (req, res) => {
         res.status(200).json({ book });
     }
     else {
+        console.log("uhfcv");
         const Books = JSON.parse(cachedData);
-        const book = Books.jsonstringbooks;
-        res.status(200).json({ book });
+        //console.log(Books);
+        res.status(200).json({ Books });
+
     }
-    // getting error of client is closed
+    // getting error of client is closedss
 
 })
 
