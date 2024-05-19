@@ -8,7 +8,6 @@ const redisClient = redis.createClient(6379);
 
 const secretKey = 'kapishupadhyay';
 
-
 const getAllBooks = asyncWrapper(async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];

@@ -25,4 +25,6 @@ const start = async () => {
     }
 }
 
+// deployment on AWS
+
 start();
