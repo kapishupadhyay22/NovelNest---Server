@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const redis = require('redis');
 const { json } = require('sequelize');
 const redisClient = redis.createClient(6379);
-
+const { sendOTPEmail, generateOTP } = require('./otpfile')
 
 const secretKey = 'kapishupadhyay';
 
@@ -52,12 +52,16 @@ const addUser = asyncWrapper(async (req, res) => {
         uname: username,
         role: isAdmin
     }
-    // Code for OTP verification of email
-    // Code for checking if the username or email exists
+
     const token = jwt.sign(payload, secretKey);
     await User.create({ username, email, password, age, genere, isAdmin });
     res.status(200).json(token);
 })
+
+const otpverify = asyncWrapper(async (req, res) => {
+
+})
+
 
 const loginUser = asyncWrapper(async (req, res) => {
     const { username, password } = req.body;
