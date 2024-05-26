@@ -48,17 +48,40 @@ const sendBook = asyncWrapper(async (req, res) => {
 
 const addUser = asyncWrapper(async (req, res) => {
     const { username, email, password, age, genere, isAdmin } = req.body;
-    const payload = {
-        uname: username,
-        role: isAdmin
-    }
+    const otp = generateOTP();
+    try {
+        await sendOTPEmail(email, otp);
 
-    const token = jwt.sign(payload, secretKey);
-    await User.create({ username, email, password, age, genere, isAdmin });
-    res.status(200).json(token);
+        redisClient.setex(email, 300, otp);
+
+        res.status(200).send('OTP sent successfully');
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        res.status(500).send('Error sending OTP');
+    }
 })
 
 const otpverify = asyncWrapper(async (req, res) => {
+    const email = req.body.email;
+    const otp = req.body.otp;
+
+    redisClient.get(email, async (err, storedOtp) => {
+        if (err) {
+            console.error('Error retrieving OTP:', err);
+            return res.status(500).send('Internal server error');
+        }
+
+        if (storedOtp === otp) {
+            const payload = {
+                uname: username,
+                role: isAdmin
+            }
+
+            const token = jwt.sign(payload, secretKey);
+            await User.create({ username, email, password, age, genere, isAdmin });
+            res.status(200).json(token);
+        }
+    });
 
 })
 
@@ -169,4 +192,4 @@ const getBookById = asyncWrapper(async (req, res) => {
 
 
 
-module.exports = { getAllBooks, sendBook, addUser, showAllUser, loginUser, getBookById };
+module.exports = { getAllBooks, sendBook, addUser, showAllUser, loginUser, getBookById, otpverify };
