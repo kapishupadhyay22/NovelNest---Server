@@ -1,8 +1,12 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('novelnest', 'kapishupadhyay', '', {
-    host: 'localhost',
-    dialect: 'postgres',
+const createSequelizeInstance = (database, username, password, options) => {
+  return new Sequelize(database, username, password, options);
+};
+
+const sequelize = createSequelizeInstance('novelnest', 'kapishupadhyay', '', {
+  host: 'localhost',
+  dialect: 'postgres',
 });
 
 module.exports = sequelize;

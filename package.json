@@ -1,26 +1,30 @@
 {
-  "name": "novelnest",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.19.2",
-    "express-async-errors": "^3.1.1",
-    "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.13",
-    "pg": "^8.11.5",
-    "pg-hstore": "^2.3.4",
-    "redis": "^4.6.13",
-    "sequelize": "^6.37.3"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
-  }
+     "name": "novelnest",
+     "version": "1.0.0",
+     "description": "",
+     "main": "index.js",
+     "scripts": {
+          "test": "echo \"Error: no test specified\" && exit 1",
+          "start": "nodemon server.js",
+          "test:keploy": "jest --coverage --coverageReporters=text --coverageReporters=cobertura --collectCoverageFrom='./**/*.{js,jsx,ts,tsx}'"
+     },
+     "keywords": [],
+     "author": "",
+     "license": "ISC",
+     "dependencies": {
+          "express": "^4.19.2",
+          "express-async-errors": "^3.1.1",
+          "jsonwebtoken": "^9.0.2",
+          "node-mocks-http": "^1.16.2",
+          "nodemailer": "^6.9.13",
+          "pg": "^8.11.5",
+          "pg-hstore": "^2.3.4",
+          "redis": "^4.6.13",
+          "sequelize": "^6.37.3",
+          "supertest": "^7.0.0"
+     },
+     "devDependencies": {
+          "jest": "^29.7.0",
+          "nodemon": "^3.1.0"
+     }
 }
