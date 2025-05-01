@@ -1,0 +1,6 @@
+🐰 Keploy: 2025-04-18T09:36:28Z 	[31mERROR[0m	failed to authenticate with apikey to the keploy
+🐰 Keploy: 2025-04-18T09:36:30Z 	[31mERROR[0m	failed to read the input for API key	{"error": "operation canceled: context canceled"}
+🐰 Keploy: 2025-04-18T09:36:35Z 	[31mERROR[0m	failed to authenticate with apikey to the keploy
+🐰 Keploy: 2025-04-18T09:37:24Z 	[31mERROR[0m	failed to authenticate with apikey to the keploy
+🐰 Keploy: 2025-04-18T09:37:24Z 	[31mERROR[0m	API key verification failed, trying again...
+🐰 Keploy: 2025-04-18T09:58:49Z 	[31mERROR[0m	failed to read the input for API key	{"error": "operation canceled: context canceled"}
